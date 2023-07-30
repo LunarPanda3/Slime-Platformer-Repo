@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerMovementScript : MonoBehaviour
 {
@@ -20,10 +21,15 @@ public class PlayerMovementScript : MonoBehaviour
     [SerializeField] private Animator animator;
     private bool isJumping;
 
+    //respawning
+    public Transform respawnPoint;
+    public Text saveText;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        respawnPoint = transform;
     }
 
     // Update is called once per frame
@@ -59,7 +65,7 @@ public class PlayerMovementScript : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Reload();
+            StartCoroutine(Death());
         }
     }
 
@@ -73,12 +79,29 @@ public class PlayerMovementScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col) {
         if (col.tag == "Kill Axis") {
-            Reload();
+            StartCoroutine(Death());
+        }
+
+        if (col.tag == "Save Spot") {
+            Debug.Log("Saved");
+            StartCoroutine(Save(col));
         }
     }
 
-    void Reload() {
+    IEnumerator Death() {
+        animator.SetBool("isDying", true);
+        float animLength = animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(animLength);
+        animator.SetBool("isDying", false);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        transform.position = respawnPoint.position;
+    }
+
+    IEnumerator Save(Collider2D save) {
+        saveText.enabled = true;
+        respawnPoint = save.transform;
+        yield return new WaitForSeconds(0.5f);
+        saveText.enabled = false;
     }
 
     void Flip() {
