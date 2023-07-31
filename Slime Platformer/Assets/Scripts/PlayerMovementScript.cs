@@ -22,14 +22,14 @@ public class PlayerMovementScript : MonoBehaviour
     private bool isJumping;
 
     //respawning
-    public Transform respawnPoint;
+    public Vector2 respawnPoint;
     public Text saveText;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        respawnPoint = transform;
+        respawnPoint = transform.position;
     }
 
     // Update is called once per frame
@@ -91,15 +91,19 @@ public class PlayerMovementScript : MonoBehaviour
     IEnumerator Death() {
         animator.SetBool("isDying", true);
         float animLength = animator.GetCurrentAnimatorStateInfo(0).length;
-        yield return new WaitForSeconds(animLength);
+        yield return new WaitForSeconds(animLength * 1.5f);
         animator.SetBool("isDying", false);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        transform.position = respawnPoint.position;
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        transform.position = respawnPoint;
+        animator.SetBool("isRespawned", true);
+        yield return new WaitForSeconds(1);
+        animator.SetBool("isRespawned", false);
+
     }
 
     IEnumerator Save(Collider2D save) {
         saveText.enabled = true;
-        respawnPoint = save.transform;
+        respawnPoint = save.transform.position;
         yield return new WaitForSeconds(0.5f);
         saveText.enabled = false;
     }
