@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Kill Axis
   - Save Spot
+  - Transform Creature
   layers:
   - Default
   - TransparentFX

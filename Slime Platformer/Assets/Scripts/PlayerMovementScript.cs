@@ -9,7 +9,7 @@ public class PlayerMovementScript : MonoBehaviour
     //movement
     public float speed = 5f;
     public float dir = 0f;
-    public float jumpHeight = 30f;
+    public float jumpHeight = 15f;
     private bool isFacingRight = true;
     
     //jumping
@@ -25,11 +25,20 @@ public class PlayerMovementScript : MonoBehaviour
     public Vector2 respawnPoint;
     public Text saveText;
 
+    //transformations
+    public string currentBody;
+    public SpriteRenderer spriteRenderer;  
+    public Sprite bunnySprite;
+    public Sprite vultureSprite;
+    public float bunnyJumpHeight = 25f;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         respawnPoint = transform.position;
+        currentBody = "Slime";
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -37,28 +46,72 @@ public class PlayerMovementScript : MonoBehaviour
     {
         dir = Input.GetAxis("Horizontal");
 
-        if (Input.GetButtonDown("Jump") && IsGrounded())
-        {
-            rb.velocity = new Vector2(rb.velocity.x, jumpHeight);
-            animator.SetBool("isGrounded", false);
-            isJumping = true;
-            animator.SetBool("isJumping", true);
-            //jumpAnim.Play("Blue Jump");
-        }
+        if (dir == 0)
+            animator.SetBool("isMoving", false);
+        else 
+            animator.SetBool("isMoving", true);
+
+        switch(currentBody) {
+            case "Slime":
+                if (Input.GetButtonDown("Jump") && IsGrounded())
+                {
+                    rb.velocity = new Vector2(rb.velocity.x, jumpHeight);
+                    animator.SetBool("isGrounded", false);
+                    isJumping = true;
+                    animator.SetBool("isJumping", true);
+                }
         
-        if (Input.GetButtonUp("Jump") && rb.velocity.y > 0f) {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * .5f);
+                if (Input.GetButtonUp("Jump") && rb.velocity.y > 0f) {
+                    rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * .5f);
+                }
+
+                if (isJumping && rb.velocity.y < 0f) {
+                    animator.SetBool("isFalling", true);
+                }
+
+                if (IsGrounded() && rb.velocity.y == 0f){
+                    animator.SetBool("isGrounded", true);
+                    isJumping = false;
+                    animator.SetBool("isJumping", false);
+                    animator.SetBool("isFalling", false);
+                }
+                break;
+            case "Vulture":
+                if (Input.GetButtonDown("Jump")) {
+                    
+                }
+                break;
+
+            case "Bunny":
+                if (Input.GetButtonDown("Jump") && IsGrounded())
+                {
+                    rb.velocity = new Vector2(rb.velocity.x, bunnyJumpHeight);
+                    animator.SetBool("isGrounded", false);
+                    isJumping = true;
+                    animator.SetBool("isJumping", true);
+                }
+        
+                if (Input.GetButtonUp("Jump") && rb.velocity.y > 0f) {
+                    rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * .5f);
+                }
+
+                if (isJumping && rb.velocity.y < 0f) {
+                    animator.SetBool("isFalling", true);
+                }
+
+                if (IsGrounded() && rb.velocity.y == 0f){
+                    animator.SetBool("isGrounded", true);
+                    isJumping = false;
+                    animator.SetBool("isJumping", false);
+                    animator.SetBool("isFalling", false);
+                }
+                break;
         }
 
-        if (isJumping && rb.velocity.y < 0f) {
-            animator.SetBool("isFalling", true);
-        }
-
-        if (IsGrounded() && rb.velocity.y == 0f){
-            animator.SetBool("isGrounded", true);
-            isJumping = false;
-            animator.SetBool("isJumping", false);
-            animator.SetBool("isFalling", false);
+        //test
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            currentBody = "Slime";
         }
 
         Flip();
@@ -85,6 +138,20 @@ public class PlayerMovementScript : MonoBehaviour
         if (col.tag == "Save Spot") {
             Debug.Log("Saved");
             StartCoroutine(Save(col));
+        }
+
+        if (col.tag == "Transform Creature") {
+            currentBody = col.name;
+            if (col.name == "Vulture") {
+                Debug.Log("Vulture!");
+                //Physics.gravity = new Vector3(0, 0, 0);
+                spriteRenderer.sprite = vultureSprite;
+            }
+            else if (col.name == "Bunny") {
+                Debug.Log("Bunny!");
+                //Physics.gravity = new Vector3(0, -9.8f, 0);
+                spriteRenderer.sprite = bunnySprite;
+            }
         }
     }
 
