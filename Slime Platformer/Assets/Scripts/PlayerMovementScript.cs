@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEditor.Animations;
 using UnityEngine.UI;
 
 public class PlayerMovementScript : MonoBehaviour
@@ -28,8 +29,11 @@ public class PlayerMovementScript : MonoBehaviour
     //transformations
     public string currentBody;
     public SpriteRenderer spriteRenderer;  
+    public Animator baseAnimator;
     public Sprite bunnySprite;
+    public Animator bunnyAnimator;
     public Sprite vultureSprite;
+    public Animator vultureAnimator;
     public float bunnyJumpHeight = 25f;
 
     // Start is called before the first frame update
@@ -39,6 +43,7 @@ public class PlayerMovementScript : MonoBehaviour
         respawnPoint = transform.position;
         currentBody = "Slime";
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        baseAnimator = gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -145,15 +150,32 @@ public class PlayerMovementScript : MonoBehaviour
             if (col.name == "Vulture") {
                 Debug.Log("Vulture!");
                 //Physics.gravity = new Vector3(0, 0, 0);
+                baseAnimator.runtimeAnimatorController = vultureAnimator.runtimeAnimatorController;
                 spriteRenderer.sprite = vultureSprite;
+                SetScaleAndCollider(col);
+                Destroy(col.gameObject);
             }
             else if (col.name == "Bunny") {
                 Debug.Log("Bunny!");
                 //Physics.gravity = new Vector3(0, -9.8f, 0);
                 spriteRenderer.sprite = bunnySprite;
+                baseAnimator.runtimeAnimatorController = bunnyAnimator.runtimeAnimatorController;
+                spriteRenderer.sprite = bunnySprite;
+                SetScaleAndCollider(col);
+                Destroy(col.gameObject);
             }
         }
     }
+
+    void SetScaleAndCollider(Collider2D col) {
+        gameObject.transform.localScale = col.transform.localScale;
+        gameObject.GetComponent<CapsuleCollider2D>().size = col.GetComponent<CapsuleCollider2D>().size;
+        gameObject.GetComponent<CapsuleCollider2D>().offset = col.GetComponent<CapsuleCollider2D>().offset;
+    }
+
+    /*IEnumarator Transform() {
+
+    }*/
 
     IEnumerator Death() {
         animator.SetBool("isDying", true);

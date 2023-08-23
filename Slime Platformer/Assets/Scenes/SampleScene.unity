@@ -10475,7 +10475,7 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.04}
+  m_Offset: {x: 0, y: -0.01}
   m_Size: {x: 0.4, y: 0.45}
   m_Direction: 0
 --- !u!95 &1850107761
@@ -10978,7 +10978,11 @@ PrefabInstance:
     - target: {fileID: 1522822554, guid: b650a38daa61df944986027ea6ffe5c8, type: 3}
       propertyPath: bunnySprite
       value: 
-      objectReference: {fileID: 21300000, guid: e0aab8ef7a3e2664c9a41888a276b862, type: 3}
+      objectReference: {fileID: 21300000, guid: 7c2784792a12903468e5a9babb630dcb, type: 3}
+    - target: {fileID: 1522822554, guid: b650a38daa61df944986027ea6ffe5c8, type: 3}
+      propertyPath: bunnyAnimator
+      value: 
+      objectReference: {fileID: 1850107761}
     - target: {fileID: 1522822554, guid: b650a38daa61df944986027ea6ffe5c8, type: 3}
       propertyPath: vultureSprite
       value: 
@@ -10986,6 +10990,14 @@ PrefabInstance:
     - target: {fileID: 1522822554, guid: b650a38daa61df944986027ea6ffe5c8, type: 3}
       propertyPath: bunnyJumpHeight
       value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1522822554, guid: b650a38daa61df944986027ea6ffe5c8, type: 3}
+      propertyPath: vultureAnimator
+      value: 
+      objectReference: {fileID: 1184098946}
+    - target: {fileID: 8287213115687019144, guid: b650a38daa61df944986027ea6ffe5c8, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8287213115687019146, guid: b650a38daa61df944986027ea6ffe5c8, type: 3}
       propertyPath: m_RootOrder
